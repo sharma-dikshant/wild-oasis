@@ -74,6 +74,7 @@ function CreateCabinForm() {
 
   function onError(errors) {
     console.error(errors);
+    console.log(getValues().regularPrice, getValues().discount);
   }
   return (
     // if there is any error while submitting the form, the onError function will be called
@@ -132,9 +133,12 @@ function CreateCabinForm() {
           defaultValue={0}
           {...register("discount", {
             required: "this field is required",
-            validate: (value) =>
-              value < getValues().regularPrice ||
-              "discount should be less than regular price",
+            validate: (value) => {
+              const regularPrice = getValues().regularPrice;
+              if (!regularPrice) return "regular price is required";
+              value < regularPrice ||
+                "discount should be less than regular price";
+            },
           })}
         />
         {errors?.discount?.message && <Error>{errors.discount.message}</Error>}
